@@ -39,7 +39,7 @@ class HomeTableViewController: UITableViewController  {
             self.customRefreshControl.endRefreshing()
             
         }, failure: { (Error) in
-            print("Could not retrieve tweet")
+            print("Could not load tweets")
         })
         
     }
@@ -62,7 +62,7 @@ class HomeTableViewController: UITableViewController  {
             self.customRefreshControl.endRefreshing()
             
         }, failure: { (Error) in
-            print("Could not retrieve tweet")
+            print("Could not load more tweets")
         })
         
     }
@@ -73,6 +73,11 @@ class HomeTableViewController: UITableViewController  {
         
         customRefreshControl.addTarget(self, action: #selector(loadTweets), for: .valueChanged)
         tableView.refreshControl = customRefreshControl
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        loadTweets()
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -95,6 +100,11 @@ class HomeTableViewController: UITableViewController  {
         if let imageData = data {
             cell.profileImageView.image = UIImage(data: imageData)
         }
+        
+        cell.setFavorite(tweetArray[indexPath.row]["favorited"] as! Bool)
+        cell.tweetId = tweetArray[indexPath.row]["id"] as! Int
+        cell.setRetweeted(tweetArray[indexPath.row]["retweeted"] as! Bool)
+
         
         return cell
     }
